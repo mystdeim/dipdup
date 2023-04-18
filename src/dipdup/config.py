@@ -1210,7 +1210,11 @@ class EventHandlerConfig(HandlerConfig, kind='handler'):
     @property
     def event_type_cls(self) -> type:
         if self._event_type_cls is None:
+            print("!!!!!!")
+            print(self)
             raise ConfigInitializationException
+        print("-----")
+        print(self._event_type_cls)
         return self._event_type_cls
 
     def initialize_event_type(self, package: str) -> None:
