@@ -1193,13 +1193,6 @@ class TokenTransferIndexConfig(IndexConfig):
 
 @dataclass
 class EventHandlerConfig(HandlerConfig, kind='handler'):
-    """Event handler config
-
-    :param callback: Callback name
-    :param contract: Contract which emits event
-    :param tag: Event tag
-    """
-
     contract: ContractConfig
     tag: str
 
@@ -1209,14 +1202,8 @@ class EventHandlerConfig(HandlerConfig, kind='handler'):
 
     @property
     def event_type_cls(self) -> type:
-        cls_name = snake_to_pascal('aggregator_payload')
-        print(f"!! cls_name: {cls_name}")
         if self._event_type_cls is None:
-            print("!!!!!!")
-            print(self)
             raise ConfigInitializationException
-        print("-----")
-        print(self._event_type_cls)
         return self._event_type_cls
 
     def initialize_event_type(self, package: str) -> None:
@@ -1226,8 +1213,6 @@ class EventHandlerConfig(HandlerConfig, kind='handler'):
 
         module_name = f'{package}.types.{self.contract.module_name}.event.{tag}'
         cls_name = snake_to_pascal(f'{tag}_payload')
-        print("!!!!! initing 1 ")
-        print(f"{module_name} + {cls_name}")
         self._event_type_cls = import_from(module_name, cls_name)
 
     def iter_imports(self, package: str) -> Iterator[tuple[str, str]]:
@@ -1238,8 +1223,6 @@ class EventHandlerConfig(HandlerConfig, kind='handler'):
         event_cls = snake_to_pascal(self.tag + '_payload')
         event_module = pascal_to_snake(self.tag)
         module_name = self.contract.module_name
-        print("!!!!! initing 2")
-        print(f"{package} + {module_name} + {event_cls}")
         yield f'{package}.types.{module_name}.event.{event_module}', event_cls
 
     def iter_arguments(self) -> Iterator[tuple[str, str]]:
@@ -1292,6 +1275,9 @@ class EventIndexConfig(IndexConfig):
     def import_objects(self, package: str) -> None:
         for handler_config in self.handlers:
             handler_config.initialize_callback_fn(package)
+
+            if isinstance(handler_config, EventHandlerConfig):
+                handler_config.initialize_event_type(package)
 
 
 ResolvedIndexConfigU = (
