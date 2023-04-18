@@ -1224,6 +1224,8 @@ class EventHandlerConfig(HandlerConfig, kind='handler'):
 
         module_name = f'{package}.types.{self.contract.module_name}.event.{tag}'
         cls_name = snake_to_pascal(f'{tag}_payload')
+        print("!!!!! initing 1 ")
+        print(f"{module_name} + {cls_name}")
         self._event_type_cls = import_from(module_name, cls_name)
 
     def iter_imports(self, package: str) -> Iterator[tuple[str, str]]:
@@ -1234,7 +1236,7 @@ class EventHandlerConfig(HandlerConfig, kind='handler'):
         event_cls = snake_to_pascal(self.tag + '_payload')
         event_module = pascal_to_snake(self.tag)
         module_name = self.contract.module_name
-        print("!!!!! initing")
+        print("!!!!! initing 2")
         print(f"{package} + {module_name} + {event_cls}")
         yield f'{package}.types.{module_name}.event.{event_module}', event_cls
 
