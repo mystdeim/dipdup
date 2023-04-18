@@ -1209,6 +1209,8 @@ class EventHandlerConfig(HandlerConfig, kind='handler'):
 
     @property
     def event_type_cls(self) -> type:
+        cls_name = snake_to_pascal('aggregator_payload')
+        print(f"!! cls_name: {cls_name}")
         if self._event_type_cls is None:
             print("!!!!!!")
             print(self)
